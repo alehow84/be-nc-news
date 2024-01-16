@@ -17,8 +17,6 @@ exports.fetchEndpoints = () => {
 }
 
 exports.fetchArticle = (articleId) => {
-
-    console.log(articleId, '<<articleId line 21 model')
     return db.query(`
     
     SELECT * FROM articles

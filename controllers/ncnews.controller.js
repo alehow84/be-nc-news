@@ -22,11 +22,9 @@ exports.getArticle = (req, res, next) => {
     const {articles_id} = req.params
     fetchArticle(articles_id)
     .then((article) => {
-        console.log(article, "<<<article in getArticle, controller")
         res.status(200).send(article)
     })
     .catch((err)=>{
-        console.log(err, "<<err in getArticle controller line 29")
         next(err)
     })
 }
