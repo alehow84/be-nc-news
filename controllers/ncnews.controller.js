@@ -1,10 +1,7 @@
-const {fetchTopics} = require('../models/ncnews.model');
+const {fetchTopics, fetchEndpoints} = require('../models/ncnews.model');
 
 exports.getTopics = (req, res, next) => {
 
-    //invoke the function from model to fetch topics
-    //include then block to send status
-    //include catch block to handle error - not yet?
     fetchTopics()
     .then((topics) => {
         res.status(200).send({topics})
@@ -12,5 +9,13 @@ exports.getTopics = (req, res, next) => {
     .catch((err) => {
         next(err)
     })
+}
+
+exports.getEndpoints = (req, res, next) =>{
+
+    const endpoints = fetchEndpoints()
+    res.status(200).send(endpoints)
+    
+
 }
 
