@@ -5,8 +5,6 @@ const seed = require('../db/seeds/seed')
 const testData = require('../db/data/test-data')
 const endpointInfo = require('../endpoints.json')
 
-// console.log(endpointInfo, '<<endpointInfo')
-
 
 beforeEach(() => seed(testData));
 afterAll(() => db.end());

@@ -2,8 +2,6 @@ const express = require('express');
 const app = express();
 const {getTopics, getEndpoints} = require('./controllers/ncnews.controller');
 
-app.use(express.json());
-
 app.get('/api/topics', getTopics)
 
 app.get('/api', getEndpoints)
