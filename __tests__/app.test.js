@@ -94,7 +94,6 @@ describe('/api/articles', ()=>{
     describe('GET /api/articles', ()=>{
         /*
         Missing functionality from this endpoint
-        -below not complete
         -articles should be sorted by date in desc order
         -error testing for this endpoint
         */
@@ -103,17 +102,17 @@ describe('/api/articles', ()=>{
             .get('/api/articles')
             .expect(200)
             .then(({body})=>{
-                // expect(body.length).toBe(13) >> current code omits articles without comments, returns 5
+                expect(body.length).toBe(13) 
                 body.forEach((article) =>{
                     expect(article).toMatchObject({
                         article_id: expect.any(Number),
                         title: expect.any(String),
                         topic: expect.any(String),
                         author: expect.any(String),
-                        created_at: expect.anything(),
+                        created_at: expect.any(String),
                         votes: expect.any(Number),
                         article_img_url: expect.any(String),
-                        comment_count: expect.anything() //will need to change this to expect any Number
+                        comment_count: expect.any(String)
                     })
                 })
             })
