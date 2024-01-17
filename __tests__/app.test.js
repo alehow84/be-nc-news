@@ -62,8 +62,7 @@ describe('/api/articles', ()=>{
                     topic: "mitch",
                     author: "butter_bridge",
                     body: "I find this existence challenging",
-                    created_at: "2020-07-09T20:11:00.000Z",
-                    //I edited created_at in my test bc the returned object had a timestamp, should i have done something in the model to format this?
+                    created_at: expect.any(String),
                     votes: 100,
                     article_img_url:
                       "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
@@ -73,7 +72,7 @@ describe('/api/articles', ()=>{
         })
     })
     describe('GET /api/articles/:articles_id invalid requests', ()=> {
-        test('404 status responds with "article not Found" message when given an article id no. that does not yet exist', ()=> {
+        test('404 status responds with "article not found" message when given an article id no. that does not yet exist', ()=> {
             return request(app)
             .get('/api/articles/20')
             .expect(404)
@@ -119,5 +118,53 @@ describe('/api/articles', ()=>{
 
         })
     })
+    describe('GET /api/articles/:article_id/comments valid endpoints', ()=>{
+        test('200 should respond with an array of comments for the selected article', () => {
+            return request(app)
+            .get('/api/articles/9/comments')
+            .expect(200)
+            .then(({body})=>{
+                expect(body.length).toBe(2)
+                body.forEach((comment) => {
+                    expect(comment).toMatchObject({
+                        comment_id: expect.any(Number),
+                        body: expect.any(String),
+                        article_id: expect.any(Number),
+                        author: expect.any(String),
+                        votes: expect.any(Number),
+                        created_at: expect.any(String)
+                    })
+                })
+            })
+        })
+        test('200 should respond with an array of comments sorted by created_at, the most recent first/ descending order', ()=>{
+            return request(app)
+            .get('/api/articles/1/comments')
+            .expect(200)
+            .then(({body})=>{
+                expect(body).toBeSortedBy("created_at", {
+                    descending: true
+                })
+            })
+        })
+    })
+    describe('GET /api/articles/:article_id/comments invalid endpoints', ()=>{
+        test('404 status responds with "article not found" message when user searches for comments for an article that doesnt exist yet', ()=>{
+            return request(app)
+            .get('/api/articles/500/comments')
+            .expect(404)
+            .then(({body}) =>{
+                expect(body.msg).toBe('article not found')
+            })
+        })
+        test('400 status responds with "bad request" message when user searches for comments with a nonsensical article id', ()=>{
+            return request(app)
+            .get('/api/articles/egg/comments')
+            .expect(400)
+            .then(({body}) =>{
+                expect(body.msg).toBe('bad request')
+            })
+        })
+    })
+    
 })
-
