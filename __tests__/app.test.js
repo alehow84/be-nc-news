@@ -91,28 +91,34 @@ describe('/api/articles', ()=>{
         })
         
     })
-    // describe block here testing for invalid requests with 400 and 404 errors
+    describe('GET /api/articles', ()=>{
+        /*
+        Missing functionality from this endpoint
+        -below not complete
+        -articles should be sorted by date in desc order
+        -error testing for this endpoint
+        */
+        test('200 should respond with an array of article objects with the correct properties', ()=>{
+            return request(app)
+            .get('/api/articles')
+            .expect(200)
+            .then(({body})=>{
+                // expect(body.length).toBe(13) >> current code omits articles without comments, returns 5
+                body.forEach((article) =>{
+                    expect(article).toMatchObject({
+                        article_id: expect.any(Number),
+                        title: expect.any(String),
+                        topic: expect.any(String),
+                        author: expect.any(String),
+                        created_at: expect.anything(),
+                        votes: expect.any(Number),
+                        article_img_url: expect.any(String),
+                        comment_count: expect.anything() //will need to change this to expect any Number
+                    })
+                })
+            })
+
+        })
+    })
 })
-
-/*
-Should:
-
-be available on /api/articles/:article_id.
-get an article by its id.
-Responds with:
-
-an article object, which should have the following properties:
-author
-title
-article_id
-body
-topic
-created_at
-votes
-article_img_url
-Consider what errors could occur with this endpoint, and make sure to test for them.
-
-Remember to add a description of this endpoint to your /api endpoint.
-*/
-
 

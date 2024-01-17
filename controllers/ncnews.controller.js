@@ -1,4 +1,4 @@
-const {fetchTopics, fetchEndpoints, fetchArticle} = require('../models/ncnews.model');
+const {fetchTopics, fetchEndpoints, fetchArticle, fetchAllArticles} = require('../models/ncnews.model');
 
 exports.getTopics = (req, res, next) => {
 
@@ -26,5 +26,13 @@ exports.getArticle = (req, res, next) => {
     })
     .catch((err)=>{
         next(err)
+    })
+}
+
+exports.getAllArticles = (req, res, next) => {
+    
+    fetchAllArticles()
+    .then((allArticles) => {
+        res.status(200).send(allArticles)
     })
 }
