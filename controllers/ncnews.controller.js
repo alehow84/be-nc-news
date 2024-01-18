@@ -1,4 +1,4 @@
-const {fetchTopics, fetchEndpoints, fetchArticle, fetchAllArticles, fetchArticleComments} = require('../models/ncnews.model');
+const {fetchTopics, fetchEndpoints, fetchArticle, fetchAllArticles, fetchArticleComments, insertArticleComment} = require('../models/ncnews.model');
 
 exports.getTopics = (req, res, next) => {
 
@@ -30,10 +30,13 @@ exports.getArticle = (req, res, next) => {
 }
 
 exports.getAllArticles = (req, res, next) => {
-    
     fetchAllArticles()
     .then((allArticles) => {
         res.status(200).send(allArticles)
+    })
+    .catch((err) =>{
+        console.log(err, "<<err")
+        next(err)
     })
 }
 
@@ -45,5 +48,16 @@ exports.getArticleComments = (req, res, next) => {
     })
     .catch((err)=>{
         next(err)
+    })
+}
+
+exports.postCommentToArticle = (req, res, next) => {
+    
+    const newComment = req.body
+    //take the body which contains the comment obj and the param that has the article id, pass it to the function to insert the article
+
+    insertArticleComment(newComment)
+    .then((comment)=>{
+        res.status(201).send({comment})
     })
 }

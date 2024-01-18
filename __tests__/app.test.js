@@ -90,10 +90,9 @@ describe('/api/articles', ()=>{
         })
         
     })
-    describe('GET /api/articles', ()=>{
+    describe('GET /api/articles valid requests', ()=>{
         /*
         Missing functionality from this endpoint
-        -articles should be sorted by date in desc order
         -error testing for this endpoint
         */
         test('200 should respond with an array of article objects with the correct properties', ()=>{
@@ -116,6 +115,27 @@ describe('/api/articles', ()=>{
                 })
             })
 
+        })
+        test('200 should respond with an array of article objects sorted by date in descending order', ()=> {
+            return request(app)
+            .get('/api/articles')
+            .expect(200)
+            .then(({body})=>{
+                expect(body).toBeSortedBy("created_at", {
+                    descending: true
+                })
+            })
+        })
+    })
+    describe('GET /api/articles invalid requests', ()=>{
+        test.skip('400 status responds with "bad request" when given a misspelled endpoint', ()=>{
+            return request(app)
+            .get('/api/artickles')
+            .expect(400)
+            .then(({body})=>{
+                expect(body.msg).toBe('bad request')
+            })
+            //not catching an error in the controller catch block, do i need to reject a promise in the model?
         })
     })
     describe('GET /api/articles/:article_id/comments valid endpoints', ()=>{
@@ -166,5 +186,51 @@ describe('/api/articles', ()=>{
             })
         })
     })
-    
+    describe('POST /api/articles/:article_id/comments valid endpoints', ()=>{
+        test('201 Adds a new comment object to the database', ()=>{
+            const newComment = {
+                "body": "I can't wait for bed-time",
+                "article_id": 5,
+                "author": "butter_bridge",
+                "votes": 10,
+                "created_at": "2024-01-17T20:15:27.000Z"
+            }
+            return request(app)
+            .post("/api/articles/5/comments")
+            .send(newComment)
+            .expect(201)
+            .then(() => {
+                return request(app)
+                .get("/api/articles/5/comments")
+                .then(({body}) => {
+                expect(body.length).toBe(3);
+                });
+            })
+        })
+        test('', ()=>{
+
+        })
+    }) 
 })
+
+//then test for the response
+        //then error handle for 400 if there is a malformed body/ missing fields in object
+        //then error handle 400 for failing schema validation?
+
+/*
+Should:
+
+be available on /api/articles/:article_id/comments.
+add a comment for an article.
+Request body accepts:
+
+an object with the following properties:
+username
+body
+Responds with:
+
+the posted comment.
+Consider what errors could occur with this endpoint, and make sure to test for them.
+
+Remember to add a description of this endpoint to your /api endpoint.
+*/
