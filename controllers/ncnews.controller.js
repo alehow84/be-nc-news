@@ -1,4 +1,5 @@
-const {fetchTopics, fetchEndpoints, fetchArticle, fetchAllArticles, fetchArticleComments, insertArticleComment} = require('../models/ncnews.model');
+const { checkArticleExists } = require('../check-exists');
+const {fetchTopics, fetchEndpoints, fetchArticle, fetchAllArticles, fetchArticleComments, insertArticleComment, check} = require('../models/ncnews.model');
 
 exports.getTopics = (req, res, next) => {
 
@@ -54,8 +55,12 @@ exports.getArticleComments = (req, res, next) => {
 exports.postCommentToArticle = (req, res, next) => {
     
     const newComment = req.body
+    const {article_id} = req.params
 
-    insertArticleComment(newComment)
+    //Q7 refactoring to do - articleExistenceQuery below is the start of using Promise.all for advanced error handling
+    // const articleExistenceQuery = checkArticleExists(article_id)
+
+    insertArticleComment(newComment, article_id)
     .then(({rows})=>{
         const postedComment = rows[0]
         res.status(201).send({postedComment})
@@ -63,5 +68,16 @@ exports.postCommentToArticle = (req, res, next) => {
     .catch((err)=>{
         console.log(err, '<<err in catch')
         next(err)
+    })
+}
+
+exports.updateVotes = (req, res, next) => {
+    //invoke function from model
+    //return response to client
+    const newVotes = req.body
+    amendVotes(newVotes)
+    .then((article)=>{
+        //do i need to destructure or dig into how i send article here?
+        res.status(200).send(article)
     })
 }

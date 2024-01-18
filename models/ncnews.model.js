@@ -61,25 +61,28 @@ exports.fetchArticleComments = (articleId) => {
     })
 }
 
-exports.insertArticleComment = (commentObj) => {
-    //first check the article exists, invoke a function check passing it the article_id
-    //then if the rows 
-
-    const queryStr = `INSERT INTO comments (
-        body,
+exports.insertArticleComment = (commentObj, articleId) => {
+    
+    const {username, body} = commentObj
+    const queryStr = `INSERT INTO comments
+        (
         article_id,
         author,
-        votes,
-        created_at)
-        VALUES ( $1, $2, $3, $4, $5)
+        body
+        )
+        VALUES ($1, $2, $3)
         RETURNING *`;
     const params = [
-        commentObj.body,
-        commentObj.article_id,
-        commentObj.author,
-        commentObj.votes,
-        commentObj.created_at
+        articleId,
+        username,
+        body,
       ];
       return db.query(queryStr, params)
     
+}
+
+exports.amendVotes = (vote) => {
+    //define a variable to extract the number in the vote obj
+    //select the articles.vote column from the articles table
+    //insert into articles table a vote count
 }

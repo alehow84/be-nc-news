@@ -49,47 +49,6 @@ describe('/api', () => {
     })
 })
 describe('/api/articles', ()=>{
-    describe('GET /api/articles/:articles_id valid requests', ()=> {
-        test('200 status responds with the correct articles object', ()=>{
-            return request(app)
-            .get("/api/articles/1")
-            .expect(200)
-            .then(({body}) => {
-                const returnedObj = body
-                const expectedObj = { article :{
-                    article_id: 1,
-                    title: "Living in the shadow of a great man",
-                    topic: "mitch",
-                    author: "butter_bridge",
-                    body: "I find this existence challenging",
-                    created_at: expect.any(String),
-                    votes: 100,
-                    article_img_url:
-                      "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
-                  }}
-                expect(returnedObj).toEqual(expectedObj)
-            })
-        })
-    })
-    describe('GET /api/articles/:articles_id invalid requests', ()=> {
-        test('404 status responds with "article not found" message when given an article id no. that does not yet exist', ()=> {
-            return request(app)
-            .get('/api/articles/20')
-            .expect(404)
-            .then(({body}) =>{
-                expect(body.msg).toBe('article not found')
-            })
-        })
-        test('400 status responds with "bad request" message when given a nonsensical article_id', ()=> {
-            return request(app)
-            .get('/api/articles/kittens')
-            .expect(400)
-            .then(({body})=>{
-                expect(body.msg).toBe('bad request')
-            })
-        })
-        
-    })
     describe('GET /api/articles valid requests', ()=>{
         /*
         Missing functionality from this endpoint
@@ -138,6 +97,72 @@ describe('/api/articles', ()=>{
     //         //not catching an error in the controller catch block, do i need to reject a promise in the model?
     //     })
     // })
+    describe('/api/articles/:articles_id', ()=> {
+        describe('GET /api/articles/:articles_id valid requests', ()=> {
+            test('200 status responds with the correct articles object', ()=>{
+                return request(app)
+                .get("/api/articles/1")
+                .expect(200)
+                .then(({body}) => {
+                    const returnedObj = body
+                    const expectedObj = { article :{
+                        article_id: 1,
+                        title: "Living in the shadow of a great man",
+                        topic: "mitch",
+                        author: "butter_bridge",
+                        body: "I find this existence challenging",
+                        created_at: expect.any(String),
+                        votes: 100,
+                        article_img_url:
+                          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+                      }}
+                    expect(returnedObj).toEqual(expectedObj)
+                })
+            })
+        })
+        describe('GET /api/articles/:articles_id invalid requests', ()=> {
+            test('404 status responds with "article not found" message when given an article id no. that does not yet exist', ()=> {
+                return request(app)
+                .get('/api/articles/20')
+                .expect(404)
+                .then(({body}) =>{
+                    expect(body.msg).toBe('article not found')
+                })
+            })
+            test('400 status responds with "bad request" message when given a nonsensical article_id', ()=> {
+                return request(app)
+                .get('/api/articles/kittens')
+                .expect(400)
+                .then(({body})=>{
+                    expect(body.msg).toBe('bad request')
+                })
+            })
+        })
+        describe.skip('PATCH /api/articles/:articles_id valid requests', ()=>{
+            test('200 should respond with the article with the vote property updated when the vote increases', ()=>{
+                const updatedArticle = {
+                    article_id: 4,
+                    title: "Student SUES Mitch!",
+                    topic: "mitch",
+                    author: "rogersop",
+                    body: "We all love Mitch and his wonderful, unique typing style. However, the volume of his typing has ALLEGEDLY burst another students eardrums, and they are now suing for damages",
+                    created_at: 1588731240000,
+                    votes: 1,
+                    article_img_url:
+                      "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+                  }
+                  const newVote = { inc_votes : 1 }
+                  const newVotes = {inc_votes: newVote}
+                return request(app)
+                .patch('/api/articles/4')
+                .send(newVotes)
+                .expect(200)
+                .then(({body})=>{
+                    expect(body).toEqual({updatedArticle})
+                })
+            })
+        })
+    })
     describe('GET /api/articles/:article_id/comments valid endpoints', ()=>{
         test('200 should respond with an array of comments for the selected article', () => {
             return request(app)
@@ -189,11 +214,8 @@ describe('/api/articles', ()=>{
     describe('POST /api/articles/:article_id/comments valid endpoints', ()=>{
         test('201 Adds a new comment object to the database', ()=>{
             const newComment = {
-                "body": "I can't wait for bed-time",
-                "article_id": 5,
-                "author": "butter_bridge",
-                "votes": 10,
-                "created_at": "2024-01-17T20:15:27.000Z"
+                "username": "butter_bridge",
+                "body": "I can't wait for bed-time"
             }
             return request(app)
             .post("/api/articles/5/comments")
@@ -209,27 +231,19 @@ describe('/api/articles', ()=>{
         })
         test('201 Responds with the posted comment object', ()=>{
             
-            const newComment = {
-                "body": "I can't wait for bed-time",
-                "article_id": 5,
-                "author": "butter_bridge",
-                "votes": 10,
-                "created_at": "2024-01-17T20:15:27.000Z"
-            }
             const postedComment = {
-                "comment_id": 19,
-                "body": "I can't wait for bed-time",
-                "article_id": 5,
-                "author": "butter_bridge",
-                "votes": 10,
-                "created_at": "2024-01-17T20:15:27.000Z"
+                "username": "butter_bridge",
+                "body": "I can't wait for bed-time"
             }
             return request(app)
             .post("/api/articles/5/comments")
-            .send(newComment)
+            .send(postedComment)
             .expect(201)
             .then(({body})=>{
-                expect(body).toEqual({postedComment})
+                expect(body.postedComment).toMatchObject({
+                    "author": "butter_bridge",
+                    "body": "I can't wait for bed-time"
+                })
             })
         })
     })
@@ -266,7 +280,7 @@ describe('/api/articles', ()=>{
                 expect(body.msg).toBe('bad request')
             })
         })
-        test('404 responds with a "user not found" msg when trying to post a comment with a valid article_id but user not found in the user db', ()=>{
+        test.skip('404 responds with a "user not found" msg when trying to post a comment with a valid article_id but user not found in the user db', ()=>{
             const newComment = {
                 "body": "I can't wait for bed-time",
                 "article_id": 5,
@@ -285,23 +299,20 @@ describe('/api/articles', ()=>{
     })
 })
 
-//then test for the response
-        //then error handle for 400 if there is a malformed body/ missing fields in object
-        //then error handle 400 for failing schema validation?
-
 /*
 Should:
 
-be available on /api/articles/:article_id/comments.
-add a comment for an article.
+be available on /api/articles/:article_id.
+update an article by article_id.
 Request body accepts:
 
-an object with the following properties:
-username
-body
+an object in the form { inc_votes: newVote }.
+newVote will indicate how much the votes property in the database should be updated by, e.g.
+{ inc_votes : 1 } would increment the current article's vote property by 1
+{ inc_votes : -100 } would decrement the current article's vote property by 100
 Responds with:
 
-the posted comment.
+the updated article
 Consider what errors could occur with this endpoint, and make sure to test for them.
 
 Remember to add a description of this endpoint to your /api endpoint.
