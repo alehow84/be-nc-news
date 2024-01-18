@@ -16,6 +16,16 @@ app.get('/api/articles/:article_id/comments', getArticleComments)
 
 app.post('/api/articles/:article_id/comments', postCommentToArticle)
 
+app.use((err, req, res, next)=>{
+    if (err.code === '23503' && err.constraint === 'comments_article_id_fkey') {
+        res.status(404).send({msg: 'article not found'})
+    }
+    if (err.code === '23503' && err.constraint === 'comments_author_fkey') {
+        res.status(404).send({msg: 'user not found'})
+    }
+    next(err)
+})
+
 app.use((err, req, res, next) =>{
     // console.log(err, "<<err in app.js")
     if (err.status === 404) {

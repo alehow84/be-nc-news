@@ -232,7 +232,57 @@ describe('/api/articles', ()=>{
                 expect(body).toEqual({postedComment})
             })
         })
-    }) 
+    })
+    describe('POST /api/articles/:article_id/comments invalid endpoints', ()=> {
+        test('404 responds with "article not found" message when user tries to post a comment on a non-existent article', ()=>{
+            const newComment = {
+                "body": "I can't wait for bed-time",
+                "article_id": 50,
+                "author": "butter_bridge",
+                "votes": 10,
+                "created_at": "2024-01-17T20:15:27.000Z"
+            }
+            return request(app)
+            .post('/api/articles/50/comments')
+            .send(newComment)
+            .expect(404)
+            .then(({body})=>{
+                expect(body.msg).toBe('article not found')
+            })
+        })
+        test('400 responds with "bad request" msg when user tries to post a comment with a nonsensical article_id and does not post the comment to the comments db', ()=>{
+            const newComment = {
+                "body": "I can't wait for bed-time",
+                "article_id": "muesli",
+                "author": "butter_bridge",
+                "votes": 10,
+                "created_at": "2024-01-17T20:15:27.000Z"
+            }
+            return request(app)
+            .post('/api/articles/muesli/comments')
+            .send(newComment)
+            .expect(400)
+            .then(({body})=>{
+                expect(body.msg).toBe('bad request')
+            })
+        })
+        test('404 responds with a "user not found" msg when trying to post a comment with a valid article_id but user not found in the user db', ()=>{
+            const newComment = {
+                "body": "I can't wait for bed-time",
+                "article_id": 5,
+                "author": "SleepyGal5000",
+                "votes": 10,
+                "created_at": "2024-01-17T20:15:27.000Z"
+            }
+            return request(app)
+            .post('/api/articles/50/comments')
+            .send(newComment)
+            .expect(404)
+            .then(({body})=>{
+                expect(body.msg).toBe('user not found')
+            })
+        })
+    })
 })
 
 //then test for the response
