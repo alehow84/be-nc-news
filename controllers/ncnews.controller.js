@@ -57,7 +57,9 @@ exports.postCommentToArticle = (req, res, next) => {
     //take the body which contains the comment obj and the param that has the article id, pass it to the function to insert the article
 
     insertArticleComment(newComment)
-    .then((comment)=>{
-        res.status(201).send({comment})
+    .then(({rows})=>{
+        const postedComment = rows[0]
+        console.log(postedComment, 'postedComment')
+        res.status(201).send({postedComment})
     })
 }

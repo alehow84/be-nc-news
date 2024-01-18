@@ -17,7 +17,7 @@ app.get('/api/articles/:article_id/comments', getArticleComments)
 app.post('/api/articles/:article_id/comments', postCommentToArticle)
 
 app.use((err, req, res, next) =>{
-    console.log(err, "<<err in app.js")
+    // console.log(err, "<<err in app.js")
     if (err.status === 404) {
         res.status(404).send(err)
     }

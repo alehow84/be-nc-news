@@ -207,8 +207,30 @@ describe('/api/articles', ()=>{
                 });
             })
         })
-        test('', ()=>{
-
+        test('201 Responds with the posted comment object', ()=>{
+            
+            const newComment = {
+                "body": "I can't wait for bed-time",
+                "article_id": 5,
+                "author": "butter_bridge",
+                "votes": 10,
+                "created_at": "2024-01-17T20:15:27.000Z"
+            }
+            const postedComment = {
+                "comment_id": 19,
+                "body": "I can't wait for bed-time",
+                "article_id": 5,
+                "author": "butter_bridge",
+                "votes": 10,
+                "created_at": "2024-01-17T20:15:27.000Z"
+            }
+            return request(app)
+            .post("/api/articles/5/comments")
+            .send(newComment)
+            .expect(201)
+            .then(({body})=>{
+                expect(body).toEqual({postedComment})
+            })
         })
     }) 
 })
