@@ -27,7 +27,7 @@ app.use((err, req, res, next)=>{
 })
 
 app.use((err, req, res, next) =>{
-    // console.log(err, "<<err in app.js")
+    
     if (err.status === 404) {
         res.status(404).send(err)
     }

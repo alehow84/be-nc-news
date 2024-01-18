@@ -127,17 +127,17 @@ describe('/api/articles', ()=>{
             })
         })
     })
-    describe('GET /api/articles invalid requests', ()=>{
-        test.skip('400 status responds with "bad request" when given a misspelled endpoint', ()=>{
-            return request(app)
-            .get('/api/artickles')
-            .expect(400)
-            .then(({body})=>{
-                expect(body.msg).toBe('bad request')
-            })
-            //not catching an error in the controller catch block, do i need to reject a promise in the model?
-        })
-    })
+    // describe('GET /api/articles invalid requests', ()=>{
+    //     test.skip('400 status responds with "bad request" when given a misspelled endpoint', ()=>{
+    //         return request(app)
+    //         .get('/api/artickles')
+    //         .expect(400)
+    //         .then(({body})=>{
+    //             expect(body.msg).toBe('bad request')
+    //         })
+    //         //not catching an error in the controller catch block, do i need to reject a promise in the model?
+    //     })
+    // })
     describe('GET /api/articles/:article_id/comments valid endpoints', ()=>{
         test('200 should respond with an array of comments for the selected article', () => {
             return request(app)
