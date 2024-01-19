@@ -58,5 +58,39 @@
     "created_at": "2020-08-01T20:11:00.000Z"
 }
     ]
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description" : " returns a posted comment object when user posts a comment with an existing article_id and username and adds comment to comments db",
+    "queries": [],
+    "exampleResponse": {"postedComment": {
+      "comment_id": 19,
+      "body": "I can't wait for bed-time",
+      "article_id": 5,
+      "author": "butter_bridge",
+      "votes": 10,
+      "created_at": "2024-01-17T20:15:27.000Z"
+  }}
+  },
+  "PATCH /api/articles/:articles_id": {
+    "description": "returns an article object with vote value updated when passed a new voted object",
+    "queries": ["article_id", "newVote"],
+    "exampleResponse" : {"article": {
+      "article_id": 4,
+      "title": "Student SUES Mitch!",
+      "topic": "mitch",
+      "author": "rogersop",
+      "body": "We all love Mitch and his wonderful, unique typing style. However, the volume of his typing has ALLEGEDLY burst another students eardrums, and they are now suing for damages",
+     " created_at": "2020-08-01T20:11:00.000Z",
+      "votes": 1,
+      "article_img_url":
+        "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+  }}
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "deletes the comment with the given comment_id",
+    "queries": ["comment_id"],
+    "exampleResponse": {
+      "statusCode": 204
+    }
   }
 }

@@ -1,4 +1,5 @@
-const {fetchTopics, fetchEndpoints, fetchArticle, fetchAllArticles, fetchArticleComments} = require('../models/ncnews.model');
+const { checkArticleExists } = require('../check-exists');
+const {fetchTopics, fetchEndpoints, fetchArticle, fetchAllArticles, fetchArticleComments, insertArticleComment, amendVotes, removeComment} = require('../models/ncnews.model');
 
 exports.getTopics = (req, res, next) => {
 
@@ -30,10 +31,13 @@ exports.getArticle = (req, res, next) => {
 }
 
 exports.getAllArticles = (req, res, next) => {
-    
     fetchAllArticles()
     .then((allArticles) => {
         res.status(200).send(allArticles)
+    })
+    .catch((err) =>{
+        console.log(err, "<<err")
+        next(err)
     })
 }
 
@@ -42,6 +46,49 @@ exports.getArticleComments = (req, res, next) => {
     fetchArticleComments(article_id)
     .then((articleComments) => {
         res.status(200).send(articleComments)
+    })
+    .catch((err)=>{
+        next(err)
+    })
+}
+
+exports.postCommentToArticle = (req, res, next) => {
+    
+    const newComment = req.body
+    const {article_id} = req.params
+
+    //Q7 refactoring to do - articleExistenceQuery below is the start of using Promise.all for advanced error handling
+    // const articleExistenceQuery = checkArticleExists(article_id)  
+
+    insertArticleComment(newComment, article_id)
+    .then(({rows})=>{
+        const postedComment = rows[0]
+        res.status(201).send({postedComment})
+    })
+    .catch((err)=>{
+        // console.log(err, '<<err in catch')
+        next(err)
+    })
+}
+
+exports.updateVotes = (req, res, next) => {
+    const {articles_id} = req.params
+    const newVotes = req.body
+    amendVotes(articles_id, newVotes)
+    .then((rows)=>{
+        const article = rows[0]
+        res.status(200).send({article})
+    })
+    .catch((err)=>{
+        next(err)
+    })
+}
+
+exports.deleteComment = (req, res, next) => {
+    const comment_id = req.params
+    removeComment(comment_id)
+    .then((response)=>{
+        res.status(204).send()
     })
     .catch((err)=>{
         next(err)

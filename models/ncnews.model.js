@@ -38,6 +38,7 @@ exports.fetchAllArticles = () => {
     LEFT JOIN comments
     ON articles.article_id = comments.article_id
     GROUP BY articles.article_id
+    ORDER BY articles.created_at DESC
     `)
     .then(({rows})=>{
         return rows
@@ -45,6 +46,7 @@ exports.fetchAllArticles = () => {
 }
 
 exports.fetchArticleComments = (articleId) => {
+    
     return db.query(`
     SELECT * FROM comments
     WHERE article_id = $1
@@ -52,9 +54,65 @@ exports.fetchArticleComments = (articleId) => {
     `, [articleId])
     .then(({rows})=>{
         if (rows.length === 0){
-           return Promise.reject({status: 404, msg: 'article not found'})
+           return Promise.reject({status: 404, msg: 'not found'})
         }
-        
         return rows
     })
+}
+
+exports.insertArticleComment = (commentObj, articleId) => {
+
+    const {username, body} = commentObj
+    const queryStr = `INSERT INTO comments
+        (
+        article_id,
+        author,
+        body
+        )
+        VALUES ($1, $2, $3)
+        RETURNING *`;
+    const params = [
+        articleId,
+        username,
+        body,
+      ];
+      return db.query(queryStr, params)
+    
+}
+
+exports.amendVotes = (articleId, vote) => {
+    const voteCount = vote.inc_votes.inc_votes
+
+    return db.query(`
+    UPDATE articles
+    SET votes = votes + $1
+    WHERE article_id = $2
+    RETURNING *
+    `, [voteCount, articleId])
+    .then(({rows})=>{
+        if(rows.length === 0) {
+           return Promise.reject({status: 404, msg: "not found"})
+        } else {
+            return rows
+        }
+    
+    })
+}
+
+exports.removeComment = (comment) => {
+
+    const commentId = comment.comment_id
+
+    return db.query(`
+    DELETE FROM comments
+    WHERE comment_id = $1
+    RETURNING *
+    `, [commentId])
+    .then(({rows})=>{
+        if (rows.length === 0){
+            return Promise.reject({status:404, msg:'not found'})
+        }
+        return rows
+    })
+   
 }
