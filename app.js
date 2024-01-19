@@ -1,5 +1,5 @@
 const express = require('express');
-const {getTopics, getEndpoints, getArticle, getAllArticles, getArticleComments, postCommentToArticle, updateVotes} = require('./controllers/ncnews.controller');
+const {getTopics, getEndpoints, getArticle, getAllArticles, getArticleComments, postCommentToArticle, updateVotes, deleteComment} = require('./controllers/ncnews.controller');
 
 const app = express();
 
@@ -18,6 +18,8 @@ app.get('/api/articles/:article_id/comments', getArticleComments)
 app.post('/api/articles/:article_id/comments', postCommentToArticle)
 
 app.patch('/api/articles/:articles_id', updateVotes)
+
+app.delete('/api/comments/:comment_id', deleteComment)
 
 app.use((err, req, res, next)=>{ 
     if (err.code === '23503') {

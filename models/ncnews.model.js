@@ -81,10 +81,6 @@ exports.insertArticleComment = (commentObj, articleId) => {
 }
 
 exports.amendVotes = (articleId, vote) => {
-    // const voteCount = vote.
-    //define a variable to extract the number in the vote obj
-    //select the articles.vote column where the article_id = articleId from the articles table
-    //insert into articles table a vote count
     const voteCount = vote.inc_votes.inc_votes
 
     return db.query(`
@@ -101,4 +97,22 @@ exports.amendVotes = (articleId, vote) => {
         }
     
     })
+}
+
+exports.removeComment = (comment) => {
+
+    const commentId = comment.comment_id
+
+    return db.query(`
+    DELETE FROM comments
+    WHERE comment_id = $1
+    RETURNING *
+    `, [commentId])
+    .then(({rows})=>{
+        if (rows.length === 0){
+            return Promise.reject({status:404, msg:'not found'})
+        }
+        return rows
+    })
+   
 }

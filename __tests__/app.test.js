@@ -50,10 +50,6 @@ describe('/api', () => {
 })
 describe('/api/articles', ()=>{
     describe('GET /api/articles valid requests', ()=>{
-        /*
-        Missing functionality from this endpoint
-        -error testing for this endpoint
-        */
         test('200 should respond with an array of article objects with the correct properties', ()=>{
             return request(app)
             .get('/api/articles')
@@ -382,5 +378,35 @@ describe('/api/articles', ()=>{
                 expect(body.msg).toBe('not found')
             })
         })
+    })
+})
+describe('/api/comments/:comment_id', ()=> {
+    describe('DELETE /api/comments/:comment_id', ()=>{
+        describe('DELETE /api/comments/:comment_id valid requests', ()=>{
+            test('204 should delete the comment when given an existing comment id', ()=>{
+                return request(app)
+                .delete('/api/comments/1')
+                .expect(204)
+            })
+        })
+        describe('DELETE /api/comments/:comment_id invalid requests', ()=>{
+            test('404 should respond with "not found" when given a comment id that does not exist', ()=>{
+                return request(app)
+                .delete('/api/comments/1000')
+                .expect(404)
+                .then(({body})=>{
+                    expect(body.msg).toBe('not found')
+                })
+            })
+            test('400 should respond with "bad request" when given a nonsense comment_id', ()=>{
+                return request(app)
+                .delete('/api/comments/brainMelt')
+                .expect(400)
+                .then(({body})=>{
+                    expect(body.msg).toBe('bad request')
+                })
+            })
+        })
+
     })
 })

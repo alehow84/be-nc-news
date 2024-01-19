@@ -1,5 +1,5 @@
 const { checkArticleExists } = require('../check-exists');
-const {fetchTopics, fetchEndpoints, fetchArticle, fetchAllArticles, fetchArticleComments, insertArticleComment, amendVotes} = require('../models/ncnews.model');
+const {fetchTopics, fetchEndpoints, fetchArticle, fetchAllArticles, fetchArticleComments, insertArticleComment, amendVotes, removeComment} = require('../models/ncnews.model');
 
 exports.getTopics = (req, res, next) => {
 
@@ -78,6 +78,17 @@ exports.updateVotes = (req, res, next) => {
     .then((rows)=>{
         const article = rows[0]
         res.status(200).send({article})
+    })
+    .catch((err)=>{
+        next(err)
+    })
+}
+
+exports.deleteComment = (req, res, next) => {
+    const comment_id = req.params
+    removeComment(comment_id)
+    .then((response)=>{
+        res.status(204).send()
     })
     .catch((err)=>{
         next(err)
