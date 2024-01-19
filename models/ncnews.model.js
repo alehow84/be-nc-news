@@ -94,7 +94,6 @@ exports.amendVotes = (articleId, vote) => {
     RETURNING *
     `, [voteCount, articleId])
     .then(({rows})=>{
-        console.log(rows, "rows in if statement, model")
         if(rows.length === 0) {
            return Promise.reject({status: 404, msg: "not found"})
         } else {
