@@ -60,8 +60,6 @@ exports.postCommentToArticle = (req, res, next) => {
     //Q7 refactoring to do - articleExistenceQuery below is the start of using Promise.all for advanced error handling
     // const articleExistenceQuery = checkArticleExists(article_id)  
 
-
-
     insertArticleComment(newComment, article_id)
     .then(({rows})=>{
         const postedComment = rows[0]
@@ -74,15 +72,14 @@ exports.postCommentToArticle = (req, res, next) => {
 }
 
 exports.updateVotes = (req, res, next) => {
-    //invoke function from model
-    //return response to client
     const {articles_id} = req.params
     const newVotes = req.body
     amendVotes(articles_id, newVotes)
-    .then(({rows})=>{
+    .then((rows)=>{
         const article = rows[0]
-        console.log(article, '<<article in controller')
-        console.log(typeof article.created_at, "line 85")
         res.status(200).send({article})
+    })
+    .catch((err)=>{
+        next(err)
     })
 }

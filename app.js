@@ -20,7 +20,7 @@ app.post('/api/articles/:article_id/comments', postCommentToArticle)
 app.patch('/api/articles/:articles_id', updateVotes)
 
 app.use((err, req, res, next)=>{ 
-    // console.log(err, '<<err')
+    console.log(err, '<<err')
     if (err.code === '23503') {
         res.status(404).send({msg: 'not found'})
     }
@@ -31,7 +31,6 @@ app.use((err, req, res, next)=>{
 })
 
 app.use((err, req, res, next) =>{
-    
     if (err.status === 404) {
         res.status(404).send(err)
     }
@@ -43,5 +42,8 @@ app.use((err, req, res, next) => {
     res.status(500).send({msg: 'Internal server error'})
 })
 
+app.all('*', (req, res, next)=> {
+    res.status(404).send({msg: 'not found'})
+})
 
 module.exports = {app}

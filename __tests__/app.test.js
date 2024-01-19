@@ -85,16 +85,16 @@ describe('/api/articles', ()=>{
                 })
             })
         })
-    })
-    describe.skip('GET /api/articles invalid requests', ()=>{
-        test('400 status responds with "bad request" when given a misspelled endpoint', ()=>{
+    }) 
+})
+    describe('GET /api/articles invalid requests', ()=>{
+        test('404 status responds with "not found" when given a misspelled endpoint', ()=>{
             return request(app)
             .get('/api/artickles')
-            .expect(400)
+            .expect(404)
             .then(({body})=>{
-                expect(body.msg).toBe('bad request')
+                expect(body.msg).toBe('not found')
             })
-            //not catching an error in the controller catch block, do i need to reject a promise in the model?
         })
     })
     describe('/api/articles/:articles_id', ()=> {
@@ -207,6 +207,41 @@ describe('/api/articles', ()=>{
               })
           })
         })
+        describe('PATCH /api/articles/:articles_id invalid requests', ()=>{
+            test('404 responds with "not found" message when user tries to update the votes for a non-existent article', ()=> {
+                const newVote = { inc_votes : 1 }
+                const newVotes = {inc_votes: newVote}
+                return request(app)
+                .patch('/api/articles/500')
+                .send(newVotes)
+                .expect(404)
+                .then(({body})=>{
+                    expect(body.msg).toBe('not found')
+                })
+            })
+            test('400 responds with "bad request" msg when user enters an invalid article_id type', ()=>{
+                const newVote = { inc_votes : 1 }
+                const newVotes = {inc_votes: newVote}
+                return request(app)
+                .patch('/api/articles/sukiIs2')
+                .send(newVotes)
+                .expect(400)
+                .then(({body})=>{
+                    expect(body.msg).toBe('bad request')
+                })
+            })
+            test.skip('304 responds with "not modified" msg when user tries to update voted with a malformed newVote obj', ()=>{
+                const newVote = { inc_votes : "kitty" }
+                const newVotes = {inc_votes: newVote}
+                return request(app)
+                .patch('/api/articles/1')
+                .send(newVotes)
+                .expect(304)
+                .then(({body})=>{
+                    expect(body.msg).toBe('not modified')
+                })
+            })
+
     })
     describe('GET /api/articles/:article_id/comments valid endpoints', ()=>{
         test('200 should respond with an array of comments for the selected article', () => {
@@ -244,7 +279,7 @@ describe('/api/articles', ()=>{
             .get('/api/articles/500/comments')
             .expect(404)
             .then(({body}) =>{
-                expect(body.msg).toBe('article not found')
+                expect(body.msg).toBe('not found')
             })
         })
         test('400 status responds with "bad request" message when user searches for comments with a nonsensical article id', ()=>{

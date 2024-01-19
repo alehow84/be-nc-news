@@ -54,9 +54,8 @@ exports.fetchArticleComments = (articleId) => {
     `, [articleId])
     .then(({rows})=>{
         if (rows.length === 0){
-           return Promise.reject({status: 404, msg: 'article not found'})
+           return Promise.reject({status: 404, msg: 'not found'})
         }
-        
         return rows
     })
 }
@@ -82,7 +81,6 @@ exports.insertArticleComment = (commentObj, articleId) => {
 }
 
 exports.amendVotes = (articleId, vote) => {
-    console.log(articleId, '<< articleId in model')
     // const voteCount = vote.
     //define a variable to extract the number in the vote obj
     //select the articles.vote column where the article_id = articleId from the articles table
@@ -95,4 +93,13 @@ exports.amendVotes = (articleId, vote) => {
     WHERE article_id = $2
     RETURNING *
     `, [voteCount, articleId])
+    .then(({rows})=>{
+        console.log(rows, "rows in if statement, model")
+        if(rows.length === 0) {
+           return Promise.reject({status: 404, msg: "not found"})
+        } else {
+            return rows
+        }
+    
+    })
 }
