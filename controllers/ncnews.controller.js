@@ -1,5 +1,5 @@
 const { checkArticleExists } = require('../check-exists');
-const {fetchTopics, fetchEndpoints, fetchArticle, fetchAllArticles, fetchArticleComments, insertArticleComment, check} = require('../models/ncnews.model');
+const {fetchTopics, fetchEndpoints, fetchArticle, fetchAllArticles, fetchArticleComments, insertArticleComment, amendVotes} = require('../models/ncnews.model');
 
 exports.getTopics = (req, res, next) => {
 
@@ -68,7 +68,7 @@ exports.postCommentToArticle = (req, res, next) => {
         res.status(201).send({postedComment})
     })
     .catch((err)=>{
-        console.log(err, '<<err in catch')
+        // console.log(err, '<<err in catch')
         next(err)
     })
 }
@@ -76,10 +76,13 @@ exports.postCommentToArticle = (req, res, next) => {
 exports.updateVotes = (req, res, next) => {
     //invoke function from model
     //return response to client
-    const {article_id} = req.params
+    const {articles_id} = req.params
     const newVotes = req.body
-    amendVotes(article_id, newVotes)
-    .then((article)=>{
+    amendVotes(articles_id, newVotes)
+    .then(({rows})=>{
+        const article = rows[0]
+        console.log(article, '<<article in controller')
+        console.log(typeof article.created_at, "line 85")
         res.status(200).send({article})
     })
 }

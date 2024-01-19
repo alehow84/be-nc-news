@@ -82,8 +82,17 @@ exports.insertArticleComment = (commentObj, articleId) => {
 }
 
 exports.amendVotes = (articleId, vote) => {
+    console.log(articleId, '<< articleId in model')
     // const voteCount = vote.
     //define a variable to extract the number in the vote obj
-    //select the articles.vote column from the articles table
+    //select the articles.vote column where the article_id = articleId from the articles table
     //insert into articles table a vote count
+    const voteCount = vote.inc_votes.inc_votes
+
+    return db.query(`
+    UPDATE articles
+    SET votes = $1
+    WHERE article_id = $2
+    RETURNING *
+    `, [voteCount, articleId])
 }
