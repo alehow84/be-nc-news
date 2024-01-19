@@ -162,7 +162,7 @@ describe('/api/articles', ()=>{
                     })
                 })
             })
-            test('200 should respond with vote property updated to the correct number where there was already an existing vote value', ()=>{
+            test('200 should respond with vote property updated to the correct number where there was already an existing vote value, and the voteCount was a positive integer', ()=>{
                   const newVote = { inc_votes : 1 }
                   const newVotes = {inc_votes: newVote}
                 return request(app)
@@ -184,6 +184,28 @@ describe('/api/articles', ()=>{
                       })
                 })
             })
+            test('200 should respond with vote property updated to the correct number where there was already an existing vote value, and the voteCount was a negative integer', ()=>{
+                const newVote = { inc_votes : -10 }
+                const newVotes = {inc_votes: newVote}
+              return request(app)
+              .patch('/api/articles/1')
+              .send(newVotes)
+              .expect(200)
+              .then(({body})=>{
+                  console.log(body)
+                  expect(body.article).toMatchObject({
+                      article_id: 1,
+                      title: "Living in the shadow of a great man",
+                      topic: "mitch",
+                      author: "butter_bridge",
+                      body: "I find this existence challenging",
+                      created_at: expect.any(String),
+                      votes: 90,
+                      article_img_url:
+                        "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+                    })
+              })
+          })
         })
     })
     describe('GET /api/articles/:article_id/comments valid endpoints', ()=>{
