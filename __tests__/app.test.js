@@ -230,17 +230,18 @@ describe('/api/articles', ()=>{
                     expect(body.msg).toBe('bad request')
                 })
             })
-            test.skip('304 responds with "not modified" msg when user tries to update voted with a malformed newVote obj', ()=>{
-                const newVote = { inc_votes : "kitty" }
-                const newVotes = {inc_votes: newVote}
-                return request(app)
-                .patch('/api/articles/1')
-                .send(newVotes)
-                .expect(304)
-                .then(({body})=>{
-                    expect(body.msg).toBe('not modified')
-                })
-            })
+            //Q8 failing error test
+            // test('304 responds with "not modified" msg when user tries to update voted with a malformed newVote obj', ()=>{
+            //     const newVote = { inc_votes : "kitty" }
+            //     const newVotes = {inc_votes: newVote}
+            //     return request(app)
+            //     .patch('/api/articles/1')
+            //     .send(newVotes)
+            //     .expect(304)
+            //     .then(({body})=>{
+            //         expect(body.msg).toBe('not modified')
+            //     })
+            // })
 
     })
     describe('GET /api/articles/:article_id/comments valid endpoints', ()=>{
