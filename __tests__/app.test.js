@@ -138,6 +138,7 @@ describe('/api/articles', ()=>{
                 })
             })
         })
+        //Q8
         describe.skip('PATCH /api/articles/:articles_id valid requests', ()=>{
             test('200 should respond with the article with the vote property updated when the vote increases', ()=>{
                 const updatedArticle = {
@@ -246,31 +247,42 @@ describe('/api/articles', ()=>{
                 })
             })
         })
+        test('201 Responds with posted comment object when given an object with additional properties that were not expected', ()=>{
+            const postedComment = {
+                "username": "butter_bridge",
+                "body": "I can't wait for bed-time",
+                "article_id" : 5
+            }
+            return request(app)
+            .post("/api/articles/5/comments")
+            .send(postedComment)
+            .expect(201)
+            .then(({body})=>{
+                expect(body.postedComment).toMatchObject({
+                    "author": "butter_bridge",
+                    "body": "I can't wait for bed-time"
+                })
+            }) 
+        })
     })
     describe('POST /api/articles/:article_id/comments invalid endpoints', ()=> {
-        test('404 responds with "article not found" message when user tries to post a comment on a non-existent article', ()=>{
+        test('404 responds with "not found" message when user tries to post a comment where the article does not yet exist', ()=>{
             const newComment = {
                 "body": "I can't wait for bed-time",
-                "article_id": 50,
-                "author": "butter_bridge",
-                "votes": 10,
-                "created_at": "2024-01-17T20:15:27.000Z"
+                "username": "butter_bridge"
             }
             return request(app)
             .post('/api/articles/50/comments')
             .send(newComment)
             .expect(404)
             .then(({body})=>{
-                expect(body.msg).toBe('article not found')
+                expect(body.msg).toBe('not found')
             })
         })
         test('400 responds with "bad request" msg when user tries to post a comment with a nonsensical article_id and does not post the comment to the comments db', ()=>{
             const newComment = {
                 "body": "I can't wait for bed-time",
-                "article_id": "muesli",
-                "author": "butter_bridge",
-                "votes": 10,
-                "created_at": "2024-01-17T20:15:27.000Z"
+                "username": "butter_bridge"
             }
             return request(app)
             .post('/api/articles/muesli/comments')
@@ -280,20 +292,17 @@ describe('/api/articles', ()=>{
                 expect(body.msg).toBe('bad request')
             })
         })
-        test.skip('404 responds with a "user not found" msg when trying to post a comment with a valid article_id but user not found in the user db', ()=>{
+        test('404 responds with a "not found" msg when trying to post a comment with a valid article_id but user not found in the user db', ()=>{
             const newComment = {
                 "body": "I can't wait for bed-time",
-                "article_id": 5,
-                "author": "SleepyGal5000",
-                "votes": 10,
-                "created_at": "2024-01-17T20:15:27.000Z"
+                "username": "SleepyGal5000"
             }
             return request(app)
             .post('/api/articles/50/comments')
             .send(newComment)
             .expect(404)
             .then(({body})=>{
-                expect(body.msg).toBe('user not found')
+                expect(body.msg).toBe('not found')
             })
         })
     })

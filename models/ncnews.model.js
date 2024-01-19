@@ -62,7 +62,7 @@ exports.fetchArticleComments = (articleId) => {
 }
 
 exports.insertArticleComment = (commentObj, articleId) => {
-    
+
     const {username, body} = commentObj
     const queryStr = `INSERT INTO comments
         (
@@ -81,7 +81,8 @@ exports.insertArticleComment = (commentObj, articleId) => {
     
 }
 
-exports.amendVotes = (vote) => {
+exports.amendVotes = (articleId, vote) => {
+    // const voteCount = vote.
     //define a variable to extract the number in the vote obj
     //select the articles.vote column from the articles table
     //insert into articles table a vote count
