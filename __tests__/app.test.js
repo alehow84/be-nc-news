@@ -314,9 +314,14 @@ describe('/api/articles', ()=>{
             .send(postedComment)
             .expect(201)
             .then(({body})=>{
+                console.log(body.postedComment)
                 expect(body.postedComment).toMatchObject({
-                    "author": "butter_bridge",
-                    "body": "I can't wait for bed-time"
+                    comment_id: 19,
+                    body: "I can't wait for bed-time",
+                    article_id: 5,
+                    author: 'butter_bridge',
+                    votes: 0,
+                    created_at: expect.any(String)
                 })
             })
         })
