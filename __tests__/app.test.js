@@ -314,7 +314,6 @@ describe('/api/articles', ()=>{
             .send(postedComment)
             .expect(201)
             .then(({body})=>{
-                console.log(body.postedComment)
                 expect(body.postedComment).toMatchObject({
                     comment_id: 19,
                     body: "I can't wait for bed-time",
