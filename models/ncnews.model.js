@@ -24,7 +24,7 @@ exports.fetchArticle = (articleId) => {
     .then(({rows})=>{
 
         if (rows.length === 0) {
-            return Promise.reject({status: 404, msg: 'article not found'})
+            return Promise.reject({status: 404, msg: 'not found'})
         } 
         const article = rows[0]
         return {article}
@@ -56,6 +56,15 @@ exports.fetchArticleComments = (articleId) => {
         if (rows.length === 0){
            return Promise.reject({status: 404, msg: 'not found'})
         }
+        return rows
+    })
+}
+
+exports.fetchAllUsers = () => {
+    return db.query(`
+    SELECT * FROM users
+    `)
+    .then(({rows}) =>{
         return rows
     })
 }

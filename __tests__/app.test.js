@@ -10,13 +10,7 @@ beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
 
-describe('GET /api/unrecognisable-endpoints', ()=>{
-    test('404: responds with not found when given an unrecognisable endpoint', () =>{
-        return request(app)
-        .get('/api/topix')
-        .expect(404)
-    })
-})
+
 describe('/api/topics', () => {
     describe('GET /api/topics valid requests', () => {
         test('200 status returns an array of topic objects to the user with the expected keys', () =>{
@@ -34,18 +28,31 @@ describe('/api/topics', () => {
             })
         })
     })
-})
-describe('/api', () => {
-    describe('GET /api valid requests', () => {
-        test('200 status returns an object describing all available endpoints on the API', () => {
+    describe('GET /api/topics invalid requests', ()=>{
+        test('404: responds with not found when given an unrecognisable endpoint', () =>{
             return request(app)
-            .get("/api")
-            .expect(200)
-            .then(({body}) => {
-                const endpointsObj = body
-                expect(endpointsObj).toEqual(endpointInfo)
+            .get('/api/topix')
+            .expect(404)
+            .then(({body})=>{
+                expect(body.msg).toBe('not found')
             })
         })
+    })
+})
+describe('/api', () => {
+    describe('GET /api', () => {
+        describe('GET/api valid requests', ()=>{
+            test('200 status returns an object describing all available endpoints on the API', () => {
+                return request(app)
+                .get("/api")
+                .expect(200)
+                .then(({body}) => {
+                    const endpointsObj = body
+                    expect(endpointsObj).toEqual(endpointInfo)
+                })
+            })
+        })
+        
     })
 })
 describe('/api/articles', ()=>{
@@ -117,12 +124,12 @@ describe('/api/articles', ()=>{
             })
         })
         describe('GET /api/articles/:articles_id invalid requests', ()=> {
-            test('404 status responds with "article not found" message when given an article id no. that does not yet exist', ()=> {
+            test('404 status responds with "not found" message when given an article id no. that does not yet exist', ()=> {
                 return request(app)
                 .get('/api/articles/20')
                 .expect(404)
                 .then(({body}) =>{
-                    expect(body.msg).toBe('article not found')
+                    expect(body.msg).toBe('not found')
                 })
             })
             test('400 status responds with "bad request" message when given a nonsensical article_id', ()=> {
@@ -412,5 +419,24 @@ describe('/api/comments/:comment_id', ()=> {
             })
         })
 
+    })
+})
+describe('/api/users', ()=>{
+    describe('GET api users valid requests', ()=>{
+        test('200 responds with an array of user objects with the expected properties', ()=>{
+            return request(app)
+            .get('/api/users')
+            .expect(200)
+            .then(({body})=>{
+                expect(body.users.length).toBe(4)
+                body.users.forEach((user)=>{
+                    expect(user).toMatchObject({
+                        username: expect.any(String),
+                        name: expect.any(String),
+                        avatar_url: expect.any(String)
+                    })
+                })
+            })
+        })
     })
 })
