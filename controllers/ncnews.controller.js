@@ -61,8 +61,8 @@ exports.postCommentToArticle = (req, res, next) => {
     // const articleExistenceQuery = checkArticleExists(article_id)  
 
     insertArticleComment(newComment, article_id)
-    .then(({rows})=>{
-        const postedComment = rows[0]
+    .then((response)=>{
+        const postedComment = response
         res.status(201).send({postedComment})
     })
     .catch((err)=>{

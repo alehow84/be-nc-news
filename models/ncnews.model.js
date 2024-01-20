@@ -77,6 +77,9 @@ exports.insertArticleComment = (commentObj, articleId) => {
         body,
       ];
       return db.query(queryStr, params)
+      .then(({rows})=>{
+        return rows[0]
+      })
     
 }
 
