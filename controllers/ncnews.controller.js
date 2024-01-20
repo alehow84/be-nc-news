@@ -1,5 +1,5 @@
 const { checkArticleExists } = require('../check-exists');
-const {fetchTopics, fetchEndpoints, fetchArticle, fetchAllArticles, fetchArticleComments, insertArticleComment, amendVotes, removeComment} = require('../models/ncnews.model');
+const {fetchTopics, fetchEndpoints, fetchArticle, fetchAllArticles, fetchArticleComments, insertArticleComment, amendVotes, removeComment, fetchAllUsers} = require('../models/ncnews.model');
 
 exports.getTopics = (req, res, next) => {
 
@@ -49,6 +49,15 @@ exports.getArticleComments = (req, res, next) => {
     })
     .catch((err)=>{
         next(err)
+    })
+}
+
+exports.getAllUsers = (req, res, next) => {
+
+    fetchAllUsers()
+    .then((response)=>{
+        const users = response
+        res.status(200).send({users})
     })
 }
 
