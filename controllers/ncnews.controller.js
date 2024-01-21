@@ -31,9 +31,12 @@ exports.getArticle = (req, res, next) => {
 }
 
 exports.getAllArticles = (req, res, next) => {
-    fetchAllArticles()
-    .then((allArticles) => {
-        res.status(200).send(allArticles)
+    const {topic} = req.query
+    fetchAllArticles(topic)
+    .then((response) => {
+        const articles = response
+        console.log(response)
+        res.status(200).send({articles})
     })
     .catch((err) =>{
         console.log(err, "<<err")
