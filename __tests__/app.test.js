@@ -90,7 +90,7 @@ describe('/api/articles', ()=>{
         })
     }) 
 })
-    describe('GET /api/articles invalid requests', ()=>{
+    describe('GET /api/articles errors', ()=>{
         test('404 status responds with "not found" when given a misspelled endpoint', ()=>{
             return request(app)
             .get('/api/artickles')
@@ -116,6 +116,24 @@ describe('/api/articles', ()=>{
                         article_img_url:
                         expect.any(String),
                       })
+                })
+            })
+        })
+        test('returns an empty array when given a topic that exists but has no articles associated with it', ()=>{
+            return request(app)
+            .get("/api/articles?topic=paper")
+            .expect(200)
+            .then(({body})=>{
+                expect(body.articles).toEqual([])
+            })  
+        })
+        describe('GET /api/articles?=errors', ()=>{
+            test('returns "topic not found" message when given a topic query that does not yet exist', ()=>{
+                return request(app)
+                .get("/api/articles?topic=eggs")
+                .expect(404)
+                .then(({body})=>{
+                    expect(body.msg).toBe('topic not found')
                 })
             })
         })

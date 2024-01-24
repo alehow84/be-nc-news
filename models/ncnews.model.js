@@ -42,9 +42,11 @@ exports.fetchAllArticles = (topicQuery) => {
     let params = []
 
     if(topicQuery) {
+     
         queryStr += ` WHERE articles.topic = $1`
         params.push(topicQuery)
     }
+
     queryStr += ` GROUP BY articles.article_id
     ORDER BY articles.created_at DESC`
 
