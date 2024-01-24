@@ -478,14 +478,3 @@ describe('/api/users', ()=>{
         })
     })
 })
-
-/*
-FEATURE REQUEST The endpoint should also accept the following query:
-
-topic, which filters the articles by the topic value specified in the query. If the query is omitted, the endpoint should respond with all articles.
-Consider what errors could occur with this endpoint, and make sure to test for them.
-
-You should not have to amend any previous tests.
-
-Remember to add a description of this endpoint to your /api endpoint.
-*/
