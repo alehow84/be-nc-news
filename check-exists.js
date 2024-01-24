@@ -11,3 +11,13 @@ exports.checkArticleExists = (article) => {
         }
     })
 }
+exports.checkTopicExists = (topicQuery) => {
+    return db.query(`
+    SELECT * FROM topics
+    WHERE slug = $1`, [topicQuery])
+    .then(({rows})=> {
+        if (rows.length === 0) {
+            return Promise.reject({status: 404, msg: "topic not found"})
+        }
+    })
+}

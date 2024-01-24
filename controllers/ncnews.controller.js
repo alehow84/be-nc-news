@@ -1,5 +1,6 @@
-const { checkArticleExists } = require('../check-exists');
+const { checkArticleExists, checkTopicExists } = require('../check-exists');
 const {fetchTopics, fetchEndpoints, fetchArticle, fetchAllArticles, fetchArticleComments, insertArticleComment, amendVotes, removeComment, fetchAllUsers} = require('../models/ncnews.model');
+
 
 exports.getTopics = (req, res, next) => {
 
@@ -31,12 +32,21 @@ exports.getArticle = (req, res, next) => {
 }
 
 exports.getAllArticles = (req, res, next) => {
-    fetchAllArticles()
-    .then((allArticles) => {
-        res.status(200).send(allArticles)
+    const {topic} = req.query
+    const articlesQuery = fetchAllArticles(topic)
+    const queries = [articlesQuery]
+
+   if (topic) {
+    const topicExistsQuery =  checkTopicExists(topic)
+    queries.push(topicExistsQuery)
+   }
+
+   Promise.all((queries))
+    .then((response) => {
+        const articles = response[0]
+        res.status(200).send({articles})
     })
     .catch((err) =>{
-        console.log(err, "<<err")
         next(err)
     })
 }
@@ -75,7 +85,6 @@ exports.postCommentToArticle = (req, res, next) => {
         res.status(201).send({postedComment})
     })
     .catch((err)=>{
-        // console.log(err, '<<err in catch')
         next(err)
     })
 }

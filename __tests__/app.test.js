@@ -62,8 +62,8 @@ describe('/api/articles', ()=>{
             .get('/api/articles')
             .expect(200)
             .then(({body})=>{
-                expect(body.length).toBe(13) 
-                body.forEach((article) =>{
+                expect(body.articles.length).toBe(13) 
+                body.articles.forEach((article) =>{
                     expect(article).toMatchObject({
                         article_id: expect.any(Number),
                         title: expect.any(String),
@@ -83,20 +83,58 @@ describe('/api/articles', ()=>{
             .get('/api/articles')
             .expect(200)
             .then(({body})=>{
-                expect(body).toBeSortedBy("created_at", {
+                expect(body.articles).toBeSortedBy("created_at", {
                     descending: true
                 })
             })
         })
     }) 
 })
-    describe('GET /api/articles invalid requests', ()=>{
+    describe('GET /api/articles errors', ()=>{
         test('404 status responds with "not found" when given a misspelled endpoint', ()=>{
             return request(app)
             .get('/api/artickles')
             .expect(404)
             .then(({body})=>{
                 expect(body.msg).toBe('not found')
+            })
+        })
+    })
+    describe('GET /api/articles?topic=existing-topic', ()=>{
+        test('returns an articles object containing an array of articles matching the queried topic where the topic exists', ()=>{
+            return request(app)
+            .get("/api/articles?topic=mitch")
+            .expect(200)
+            .then(({body})=>{
+                expect(body.articles.length).toBe(12)
+                body.articles.forEach((article)=>{
+                    expect(article).toMatchObject({
+                        title: expect.any(String),
+                        topic: "mitch",
+                        author: expect.any(String),
+                        created_at: expect.any(String),
+                        article_img_url:
+                        expect.any(String),
+                      })
+                })
+            })
+        })
+        test('returns an empty array when given a topic that exists but has no articles associated with it', ()=>{
+            return request(app)
+            .get("/api/articles?topic=paper")
+            .expect(200)
+            .then(({body})=>{
+                expect(body.articles).toEqual([])
+            })  
+        })
+        describe('GET /api/articles?=errors', ()=>{
+            test('returns "topic not found" message when given a topic query that does not yet exist', ()=>{
+                return request(app)
+                .get("/api/articles?topic=eggs")
+                .expect(404)
+                .then(({body})=>{
+                    expect(body.msg).toBe('topic not found')
+                })
             })
         })
     })
@@ -142,7 +180,7 @@ describe('/api/articles', ()=>{
             })
         })
         //Q8
-        describe('PATCH /api/articles/:articles_id valid requests', ()=>{
+    describe('PATCH /api/articles/:articles_id valid requests', ()=>{
             test('200 should respond with the article with vote property updated to equal the given vote count where the vote property was previously 0', ()=>{
                   const newVote = { inc_votes : 1 }
                   const newVotes = {inc_votes: newVote}
@@ -207,7 +245,7 @@ describe('/api/articles', ()=>{
               })
           })
         })
-        describe('PATCH /api/articles/:articles_id invalid requests', ()=>{
+    describe('PATCH /api/articles/:articles_id invalid requests', ()=>{
             test('404 responds with "not found" message when user tries to update the votes for a non-existent article', ()=> {
                 const newVote = { inc_votes : 1 }
                 const newVotes = {inc_votes: newVote}
