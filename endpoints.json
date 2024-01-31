@@ -3,7 +3,7 @@
     "description": "serves up a json representation of all the available endpoints of the api"
   },
   "GET /api/topics": {
-    "description": "serves an array of all topics",
+    "description": "serves an array of all topics currently available",
     "queries": [],
     "exampleResponse": {
       "topics": [{ "slug": "football", "description": "Footie!" }]
@@ -27,7 +27,8 @@
     }
   },
   "GET /api/articles/:articles_id": {
-    "description": "returns an articles object containing the article associated with the clients requested article_id",
+    "description": "returns an articles object containing the article associated with the users requested article_id",
+    "queries": [],
     "exampleResponse": { "article" :{
       "article_id": 1,
       "title": "Living in the shadow of a great man",
@@ -37,12 +38,13 @@
       "created_at": "2020-07-09T20:11:00.000Z",
       "votes": 100,
       "article_img_url":
-        "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+        "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+        "comment_count": "3"
     }}
   },
   "GET /api/articles?topic": {
     "description": "returns an articles object with an array of articles matching the topic query",
-    "queries": ["topic"],
+    "queries": [],
     "exampleResponse": {
       "articles": [
         {

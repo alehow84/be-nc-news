@@ -27,6 +27,7 @@ exports.getArticle = (req, res, next) => {
         res.status(200).send(article)
     })
     .catch((err)=>{
+
         next(err)
     })
 }
@@ -76,7 +77,7 @@ exports.postCommentToArticle = (req, res, next) => {
     const newComment = req.body
     const {article_id} = req.params
 
-    //Q7 refactoring to do - articleExistenceQuery below is the start of using Promise.all for advanced error handling
+    //Refactoring to do - articleExistenceQuery below is the start of using Promise.all for advanced error handling
     // const articleExistenceQuery = checkArticleExists(article_id)  
 
     insertArticleComment(newComment, article_id)
