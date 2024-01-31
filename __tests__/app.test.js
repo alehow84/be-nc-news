@@ -138,7 +138,7 @@ describe('/api/articles', ()=>{
             })
         })
     })
-    describe('/api/articles/:articles_id', ()=> {
+    describe('/api/articles/:articles_id HERE', ()=> {
         describe('GET /api/articles/:articles_id valid requests', ()=> {
             test('200 status responds with the correct articles object', ()=>{
                 return request(app)
@@ -157,17 +157,38 @@ describe('/api/articles', ()=>{
                         article_img_url:
                           "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
                       }}
-                    expect(returnedObj).toEqual(expectedObj)
+                    expect(returnedObj).toMatchObject(expectedObj)
+                })
+            })
+            test('200 responds with the correct articles object, now to include a comment_count property showing how many comments that article has', ()=>{
+                return request(app)
+                .get('/api/articles/9')
+                .then(({body})=>{
+                    const returnedObj = body
+                    const expectedObj = {article: {
+                        article_id: 9,
+                        title: "They're not exactly dogs, are they?",
+                        topic: "mitch",
+                        author: "butter_bridge",
+                        body: "Well? Think about it.",
+                        created_at: expect.any(String),
+                        votes: 0,
+                        article_img_url:
+                          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+                          comment_count: "2"
+                      }
+                    }
+                    expect(returnedObj).toMatchObject(expectedObj)
                 })
             })
         })
         describe('GET /api/articles/:articles_id invalid requests', ()=> {
-            test('404 status responds with "not found" message when given an article id no. that does not yet exist', ()=> {
+            test('404 status responds with "Article not found" message when given an article id no. that does not yet exist', ()=> {
                 return request(app)
                 .get('/api/articles/20')
                 .expect(404)
                 .then(({body}) =>{
-                    expect(body.msg).toBe('not found')
+                    expect(body.msg).toBe('Article not found')
                 })
             })
             test('400 status responds with "bad request" message when given a nonsensical article_id', ()=> {
@@ -179,7 +200,6 @@ describe('/api/articles', ()=>{
                 })
             })
         })
-        //Q8
     describe('PATCH /api/articles/:articles_id valid requests', ()=>{
             test('200 should respond with the article with vote property updated to equal the given vote count where the vote property was previously 0', ()=>{
                   const newVote = { inc_votes : 1 }
@@ -268,18 +288,17 @@ describe('/api/articles', ()=>{
                     expect(body.msg).toBe('bad request')
                 })
             })
-            //Q8 failing error test
-            // test('304 responds with "not modified" msg when user tries to update voted with a malformed newVote obj', ()=>{
-            //     const newVote = { inc_votes : "kitty" }
-            //     const newVotes = {inc_votes: newVote}
-            //     return request(app)
-            //     .patch('/api/articles/1')
-            //     .send(newVotes)
-            //     .expect(304)
-            //     .then(({body})=>{
-            //         expect(body.msg).toBe('not modified')
-            //     })
-            // })
+            test('400 responds with "bad request" msg when user tries to update voted with a malformed newVote obj', ()=>{
+                const newVote = { inc_votes : "kitty" }
+                const newVotes = {inc_votes: newVote}
+                return request(app)
+                .patch('/api/articles/1')
+                .send(newVotes)
+                .expect(400)
+                .then(({body})=>{
+                    expect(body.msg).toBe('bad request')
+                })
+            })
 
     })
     describe('GET /api/articles/:article_id/comments valid endpoints', ()=>{
@@ -478,3 +497,4 @@ describe('/api/users', ()=>{
         })
     })
 })
+

@@ -1,6 +1,6 @@
 const db = require('./db/connection');
 
-//Q7 - function to use to check if article exists to then return in Promise.all in postCommentToArticle function in the controller
+//Possible refactor - use checkArticleExists below to check if article exists to then return a promise.All in postCommentToArticle function in the controller
 exports.checkArticleExists = (article) => {
     return db
     .query(`SELECT * FROM articles
