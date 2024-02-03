@@ -88,6 +88,22 @@ describe('/api/articles', ()=>{
                 })
             })
         })
+        test('200 should respond with an array of article objects sorted by the given sort_by query (not default created_at). Valid sort_by queries include title, topic, author, votes and comment_count', ()=>{
+            return request(app)
+            .get('/api/articles?sort_by=title')
+            .expect(200)
+            .then(({body})=>{
+                expect(body.articles).toBeSortedBy('title', {descending:true})
+            })
+        })
+        test('200 should return an array of articles sorted by the given sort_by query in the order specified by the order query', ()=>{
+            return request(app)
+            .get('/api/articles?sort_by=votes&order=asc')
+            .expect(200)
+            .then(({body})=>{
+                expect(body.articles).toBeSortedBy('votes', {ascending: true})
+            })
+        })
     }) 
 })
     describe('GET /api/articles errors', ()=>{
@@ -98,6 +114,23 @@ describe('/api/articles', ()=>{
             .then(({body})=>{
                 expect(body.msg).toBe('not found')
             })
+        })
+        test('404 responds with "not found" when given a sort_by query for a column that does not yet exist', ()=>{
+            return request(app)
+            .get('/api/articles?sort_by=reading_time')
+            .expect(404)
+            .then(({body})=>{
+                expect(body.msg).toBe("requested sort_by column not found")
+            })
+        })
+        test('400 responds with "invalid order query"', ()=>{
+            return request(app)
+            .get('/api/articles?sort_by=comment_count&order=bunnies')
+            .expect(400)
+            .then(({body})=>{
+                expect(body.msg).toBe("bad request - invalid order query")
+            })
+
         })
     })
     describe('GET /api/articles?topic=existing-topic', ()=>{
@@ -127,7 +160,7 @@ describe('/api/articles', ()=>{
                 expect(body.articles).toEqual([])
             })  
         })
-        describe('GET /api/articles?=errors', ()=>{
+        describe('GET /api/articles?topic=errors', ()=>{
             test('returns "topic not found" message when given a topic query that does not yet exist', ()=>{
                 return request(app)
                 .get("/api/articles?topic=eggs")
@@ -497,4 +530,3 @@ describe('/api/users', ()=>{
         })
     })
 })
-

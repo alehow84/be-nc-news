@@ -37,7 +37,7 @@ app.use((err, req, res, next) =>{
     if (err.status === 404) {
         res.status(404).send(err)
     }
-    res.status(400).send({msg: 'bad request'})
+    res.status(400).send(err)
     next(err)
 })
 

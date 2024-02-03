@@ -33,8 +33,9 @@ exports.getArticle = (req, res, next) => {
 }
 
 exports.getAllArticles = (req, res, next) => {
-    const {topic} = req.query
-    const articlesQuery = fetchAllArticles(topic)
+    
+    const {topic, sort_by, order} = req.query
+    const articlesQuery = fetchAllArticles(topic, sort_by, order)
     const queries = [articlesQuery]
 
    if (topic) {

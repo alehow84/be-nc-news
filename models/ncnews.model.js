@@ -35,7 +35,17 @@ exports.fetchArticle = (articleId) => {
     })
 }
 
-exports.fetchAllArticles = (topicQuery) => {
+exports.fetchAllArticles = (topicQuery, sort_by = "created_at", order="DESC") => {
+
+    const validSortByQueries = ["title", "topic", "author", "created_at", "votes", "comment_count"]
+    const validOrderQueries = ["ASC", "asc", "DESC", "desc"]
+
+    if (!validSortByQueries.includes(sort_by)){
+        return Promise.reject({status:404, msg:"requested sort_by column not found"})
+    }
+    if (!validOrderQueries.includes(order)) {
+        return Promise.reject({status:400, msg: "bad request - invalid order query"})
+    }
 
     let queryStr = `
     SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id) AS comment_count
@@ -51,8 +61,9 @@ exports.fetchAllArticles = (topicQuery) => {
         params.push(topicQuery)
     }
 
+
     queryStr += ` GROUP BY articles.article_id
-    ORDER BY articles.created_at DESC`
+        ORDER BY ${sort_by} ${order}`
 
     return db.query(queryStr, params)
     .then(({rows})=>{
