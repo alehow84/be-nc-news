@@ -1,7 +1,9 @@
 const express = require('express');
 const {getTopics, getEndpoints, getArticle, getAllArticles, getArticleComments, postCommentToArticle, updateVotes, deleteComment, getAllUsers} = require('./controllers/ncnews.controller');
-
 const app = express();
+const cors = require('cors');
+
+app.use(cors());
 
 app.use(express.json());
 
