@@ -11,7 +11,7 @@ The first page you will see on loading lists the different endpoints available a
 To play around with the code:
 
 1. Ensure you have Node.js (v20.8.0 or later) & PostgreSql (v16.1 or later) installed 
-2. Clone this repo
+2. Fork and then Clone this repo to your local machine
 
 ```
 git clone https://github.com/alehow84/be-nc-news.git
