@@ -15,6 +15,7 @@
     "exampleResponse": {
       "articles": [
         {
+          "article_id": 12,
           "title": "Seafood substitutions are increasing",
           "topic": "cooking",
           "author": "weegembump",
@@ -29,18 +30,19 @@
   "GET /api/articles/:articles_id": {
     "description": "returns an articles object containing the article associated with the users requested article_id",
     "queries": [],
-    "exampleResponse": { "article" :{
-      "article_id": 1,
-      "title": "Living in the shadow of a great man",
-      "topic": "mitch",
-      "author": "butter_bridge",
-      "body": "I find this existence challenging",
-      "created_at": "2020-07-09T20:11:00.000Z",
-      "votes": 100,
-      "article_img_url":
-        "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+    "exampleResponse": {
+      "article": {
+        "article_id": 1,
+        "title": "Living in the shadow of a great man",
+        "topic": "mitch",
+        "author": "butter_bridge",
+        "body": "I find this existence challenging",
+        "created_at": "2020-07-09T20:11:00.000Z",
+        "votes": 100,
+        "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
         "comment_count": "3"
-    }}
+      }
+    }
   },
   "GET /api/articles?topic": {
     "description": "returns an articles object with an array of articles matching the topic query",
@@ -68,34 +70,35 @@
       ]
     }
   },
-  "GET /api/articles/:articles_id/comments" : {
-    "description" : "returns an array of comment objects for the given article_id",
-    "exampleResponse" : [{
-      "comment_id": 14,
-      "body": "I love this article",
-      "article_id": 9,
-      "author": "Mr Positive",
-      "votes": 5,
-      "created_at": "2020-07-09T20:11:00.000Z"
-  }, {
-    "comment_id": 15,
-    "body": "I'm not so sure I like this",
-    "article_id": 9,
-    "author": "Mr Skeptical",
-    "votes": 3,
-    "created_at": "2020-08-01T20:11:00.000Z"
-}
+  "GET /api/articles/:articles_id/comments": {
+    "description": "returns an array of comment objects for the given article_id",
+    "exampleResponse": [
+      {
+        "comment_id": 14,
+        "body": "I love this article",
+        "article_id": 9,
+        "author": "Mr Positive",
+        "votes": 5,
+        "created_at": "2020-07-09T20:11:00.000Z"
+      },
+      {
+        "comment_id": 15,
+        "body": "I'm not so sure I like this",
+        "article_id": 9,
+        "author": "Mr Skeptical",
+        "votes": 3,
+        "created_at": "2020-08-01T20:11:00.000Z"
+      }
     ]
   },
   "GET /api/users": {
-    "description" : "returns an object containing an arracy of user objects",
+    "description": "returns an object containing an array of user objects",
     "exampleResponse": {
       "users": [
         {
           "username": "butter_bridge",
           "name": "jonny",
-          "avatar_url":
-            "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+          "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
         },
         {
           "username": "icellusedkars",
@@ -110,38 +113,40 @@
         {
           "username": "lurker",
           "name": "do_nothing",
-          "avatar_url":
-            "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png"
+          "avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png"
         }
       ]
     }
   },
   "POST /api/articles/:article_id/comments": {
-    "description" : " returns a posted comment object when user posts a comment with an existing article_id and username and adds comment to comments db",
+    "description": " returns a posted comment object when user posts a comment with an existing article_id and username and adds comment to comments db",
     "queries": [],
-    "exampleResponse": {"postedComment": {
-      "comment_id": 19,
-      "body": "I can't wait for bed-time",
-      "article_id": 5,
-      "author": "butter_bridge",
-      "votes": 10,
-      "created_at": "2024-01-17T20:15:27.000Z"
-  }}
+    "exampleResponse": {
+      "postedComment": {
+        "comment_id": 19,
+        "body": "I can't wait for bed-time",
+        "article_id": 5,
+        "author": "butter_bridge",
+        "votes": 10,
+        "created_at": "2024-01-17T20:15:27.000Z"
+      }
+    }
   },
   "PATCH /api/articles/:articles_id": {
     "description": "returns an article object with vote value updated when passed a new voted object",
     "queries": ["article_id", "newVote"],
-    "exampleResponse" : {"article": {
-      "article_id": 4,
-      "title": "Student SUES Mitch!",
-      "topic": "mitch",
-      "author": "rogersop",
-      "body": "We all love Mitch and his wonderful, unique typing style. However, the volume of his typing has ALLEGEDLY burst another students eardrums, and they are now suing for damages",
-     " created_at": "2020-08-01T20:11:00.000Z",
-      "votes": 1,
-      "article_img_url":
-        "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
-  }}
+    "exampleResponse": {
+      "article": {
+        "article_id": 4,
+        "title": "Student SUES Mitch!",
+        "topic": "mitch",
+        "author": "rogersop",
+        "body": "We all love Mitch and his wonderful, unique typing style. However, the volume of his typing has ALLEGEDLY burst another students eardrums, and they are now suing for damages",
+        " created_at": "2020-08-01T20:11:00.000Z",
+        "votes": 1,
+        "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+      }
+    }
   },
   "DELETE /api/comments/:comment_id": {
     "description": "deletes the comment with the given comment_id",
