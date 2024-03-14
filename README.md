@@ -26,6 +26,20 @@ You're ready to go!
 
 Here are your commands: 
 
-- To set up the database: npm run setup-dbs 
-- To seed the local database: npm run seed
-- To run tests: npm test
+- To set up the database: 
+
+```
+npm run setup-dbs
+```
+
+- To seed the local database:
+  
+```
+npm run seed
+```
+
+- To run tests:
+
+```
+npm test
+```
